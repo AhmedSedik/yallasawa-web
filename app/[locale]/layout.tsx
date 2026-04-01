@@ -55,6 +55,13 @@ export default async function LocaleLayout({
       dir={dir}
       className={`${jakartaSans.variable} ${vietnamPro.variable} ${cairo.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783833750870363"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`min-h-full flex flex-col ${locale === "ar" ? "font-arabic" : ""}`}>
         <NextIntlClientProvider messages={messages}>
           <ReleaseProvider release={release}>
