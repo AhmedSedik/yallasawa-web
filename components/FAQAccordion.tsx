@@ -22,33 +22,49 @@ export default function FAQAccordion({ categories }: { categories: FAQCategory[]
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {categories.map((category) => (
         <div key={category.title}>
-          <h3 className="mb-4 font-display text-sm font-semibold uppercase tracking-wider text-cyan">
-            {category.title}
-          </h3>
-          <div className="space-y-2">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan/20 to-transparent" />
+            <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-cyan">
+              {category.title}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan/20 to-transparent" />
+          </div>
+          <div className="space-y-3">
             {category.items.map((item) => {
               const key = `${category.title}-${item.question}`;
               const isOpen = openIndex === key;
               return (
-                <div
+                <motion.div
                   key={key}
-                  className={`glass glass-border rounded-md transition-colors duration-200 ${isOpen ? "bg-surface-high/30" : ""}`}
+                  className={`group rounded-xl transition-all duration-300 ${
+                    isOpen
+                      ? "bg-surface-container glass-border shadow-lg shadow-cyan/5"
+                      : "bg-surface-low/50 hover:bg-surface-container/60"
+                  }`}
+                  layout
                 >
                   <button
                     onClick={() => toggle(key)}
-                    className="flex w-full items-center justify-between px-6 py-4 text-left"
+                    className="flex w-full items-center justify-between px-6 py-5 text-start"
                   >
-                    <span className="font-display text-sm font-medium text-text-primary pr-4">
+                    <span className={`font-display text-base font-medium transition-colors duration-200 pe-4 ${
+                      isOpen ? "text-cyan" : "text-text-primary group-hover:text-cyan/80"
+                    }`}>
                       {item.question}
                     </span>
                     <motion.div
                       animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className={`flex-shrink-0 rounded-full p-1 transition-colors duration-200 ${
+                        isOpen ? "bg-cyan/10" : "bg-surface-high/50"
+                      }`}
                     >
-                      <ChevronDown className="h-5 w-5 flex-shrink-0 text-cyan" />
+                      <ChevronDown className={`h-4 w-4 transition-colors duration-200 ${
+                        isOpen ? "text-cyan" : "text-text-warm"
+                      }`} />
                     </motion.div>
                   </button>
                   <AnimatePresence>
@@ -57,18 +73,19 @@ export default function FAQAccordion({ categories }: { categories: FAQCategory[]
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <div className="border-t border-cyan/10 px-6 py-4">
-                          <p className="text-sm leading-relaxed text-text-warm">
+                        <div className="px-6 pb-5">
+                          <div className="h-px bg-gradient-to-r from-cyan/10 via-cyan/5 to-transparent mb-4" />
+                          <p className="text-base leading-relaxed text-text-warm">
                             {item.answer}
                           </p>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               );
             })}
           </div>

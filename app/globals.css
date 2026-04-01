@@ -94,9 +94,16 @@ html {
   color: var(--color-text-primary);
 }
 
-/* Arabic / RTL — use Cairo font */
+/* Arabic / RTL — use Cairo font with larger base size */
 .font-arabic {
   font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
+}
+[dir="rtl"] {
+  font-size: 110%;
+  line-height: 1.8;
+}
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 {
+  line-height: 1.4;
 }
 
 /* RTL: flip gradients */
