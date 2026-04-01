@@ -13,7 +13,7 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-6 py-24">
       {/* Ambient cyan glow — background radial */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-cyan/8 blur-[150px]" />
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[300px] w-[400px] md:h-[600px] md:w-[800px] rounded-full bg-cyan/8 blur-[150px]" />
 
       {/* Headline */}
       <motion.h1
@@ -61,12 +61,12 @@ export default function Hero() {
       >
         <div className="hero-showcase relative overflow-hidden rounded-2xl glass glass-border">
           {/* Ambient golden glow behind icon */}
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-amber-deep/15 blur-[100px]" />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] h-[200px] w-[200px] rounded-full bg-amber-light/10 blur-[60px]" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[250px] w-[250px] md:h-[400px] md:w-[400px] rounded-full bg-amber-deep/15 blur-[100px]" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] h-[120px] w-[120px] md:h-[200px] md:w-[200px] rounded-full bg-amber-light/10 blur-[60px]" />
 
           {/* Orbiting ring effect */}
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[320px] w-[320px] rounded-full border border-amber-deep/15 hero-orbit" />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full border border-cyan/8 hero-orbit-reverse" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] md:h-[320px] md:w-[320px] rounded-full border border-amber-deep/15 hero-orbit" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[260px] w-[260px] md:h-[420px] md:w-[420px] rounded-full border border-cyan/8 hero-orbit-reverse" />
 
           {/* Star particles */}
           <div className="pointer-events-none absolute inset-0">
@@ -94,7 +94,7 @@ export default function Hero() {
                 alt="YallaSawa"
                 width={220}
                 height={220}
-                className="relative rounded-[1.5rem] shadow-2xl shadow-amber-deep/20"
+                className="relative w-[140px] h-[140px] md:w-[220px] md:h-[220px] rounded-[1.5rem] shadow-2xl shadow-amber-deep/20"
                 priority
               />
             </motion.div>

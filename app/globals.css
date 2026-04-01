@@ -142,6 +142,15 @@ html {
   animation: hero-twinkle 3s ease-in-out infinite;
 }
 
+/* Reduced motion — disable CSS animations for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit,
+  .hero-orbit-reverse,
+  .hero-twinkle {
+    animation: none;
+  }
+}
+
 /* RTL: hero text alignment */
 [dir="rtl"] .hero-showcase .md\:text-start {
   text-align: center;
