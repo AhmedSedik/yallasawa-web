@@ -1,26 +1,141 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Brand Colors (from app icon) */
+  --color-cyan: #3BEABD;
+  --color-cyan-light: #6FF0D0;
+  --color-coral: #FF6B5A;
+
+  /* CTA Colors (amber — buttons only) */
+  --color-amber-light: #ffe2ab;
+  --color-amber-deep: #ffbf00;
+
+  /* Surfaces */
+  --color-surface-base: #11131b;
+  --color-surface-lowest: #0c0e15;
+  --color-surface-low: #191b23;
+  --color-surface-container: #1d1f27;
+  --color-surface-high: #272a32;
+  --color-surface-highest: #32343d;
+
+  /* Text */
+  --color-text-primary: #e1e2ed;
+  --color-text-warm: #d4c5ab;
+  --color-outline: #9c8f78;
+
+  /* Glass (cyan-tinted) */
+  --color-glass: rgba(39, 42, 50, 0.5);
+  --color-glass-border: rgba(59, 234, 189, 0.12);
+  --color-glass-border-hover: rgba(59, 234, 189, 0.25);
+
+  /* Border Radius */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Fonts (registered via next/font/local) */
+  --font-display: var(--font-jakarta);
+  --font-body: var(--font-vietnam);
+  --font-arabic: var(--font-cairo);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base Styles — Dark Mode Only */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Glass Utilities */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-border {
+  border: 1px solid var(--color-glass-border);
+}
+
+.glass-border-hover:hover {
+  border-color: var(--color-glass-border-hover);
+}
+
+/* Amber Gradient — CTA buttons ONLY */
+.amber-gradient {
+  background: linear-gradient(135deg, var(--color-amber-deep), var(--color-amber-light));
+}
+
+.amber-gradient-text {
+  background: linear-gradient(135deg, var(--color-amber-deep), var(--color-amber-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Cyan Glow (brand accent) */
+.cyan-glow {
+  box-shadow: 0 0 60px rgba(59, 234, 189, 0.15), 0 0 120px rgba(59, 234, 189, 0.08);
+}
+
+.cyan-glow-sm {
+  box-shadow: 0 0 30px rgba(59, 234, 189, 0.1), 0 0 60px rgba(59, 234, 189, 0.05);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(59, 234, 189, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* Arabic / RTL — use Cairo font */
+.font-arabic {
+  font-family: var(--font-arabic), var(--font-body), system-ui, sans-serif;
+}
+
+/* RTL: flip gradients */
+[dir="rtl"] .amber-gradient {
+  background: linear-gradient(-135deg, var(--color-amber-deep), var(--color-amber-light));
+}
+
+/* LTR inputs in RTL context */
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="url"] {
+  direction: ltr;
+  text-align: right;
+}
+
+/* Hero showcase animations */
+@keyframes hero-orbit {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes hero-orbit-reverse {
+  from { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: translate(-50%, -50%) rotate(0deg); }
+}
+@keyframes hero-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+.hero-orbit {
+  animation: hero-orbit 20s linear infinite;
+}
+.hero-orbit-reverse {
+  animation: hero-orbit-reverse 30s linear infinite;
+}
+.hero-twinkle {
+  animation: hero-twinkle 3s ease-in-out infinite;
+}
+
+/* RTL: hero text alignment */
+[dir="rtl"] .hero-showcase .md\:text-start {
+  text-align: center;
 }
