@@ -16,7 +16,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yalla-sawa.com"),
+  metadataBase: new URL("https://www.yalla-sawa.com"),
   title: "YallaSawa — Watch Together, No Matter Where",
   description:
     "Synchronized video watch parties with real-time chat. Download YallaSawa for Windows and watch together in perfect sync.",

@@ -1,5 +1,5 @@
 const REPO = "AhmedSedik/yalla_forga";
-const FALLBACK_VERSION = "0.6.1-beta";
+const FALLBACK_VERSION = "0.6.5-beta";
 const FALLBACK_URL = `https://github.com/${REPO}/releases/latest/download/YallaSawa.Setup.${FALLBACK_VERSION}.exe`;
 
 export interface ReleaseInfo {
@@ -9,9 +9,14 @@ export interface ReleaseInfo {
 
 export async function getLatestRelease(): Promise<ReleaseInfo> {
   try {
+    const headers: HeadersInit = { Accept: "application/vnd.github.v3+json" };
+    if (process.env.GITHUB_TOKEN) {
+      headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    }
+
     const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
       next: { revalidate: 300 }, // revalidate every 5 minutes
-      headers: { Accept: "application/vnd.github.v3+json" },
+      headers,
     });
 
     if (!res.ok) throw new Error(`GitHub API ${res.status}`);
