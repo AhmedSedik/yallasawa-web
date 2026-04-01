@@ -3,11 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CONTACT_EMAIL, DOWNLOAD_URL } from "@/lib/constants";
+import { CONTACT_EMAIL } from "@/lib/constants";
+import { useRelease } from "@/lib/ReleaseContext";
 
 export default function Footer() {
   const t = useTranslations("footer");
   const nt = useTranslations("nav");
+  const { downloadUrl } = useRelease();
 
   const navLinks = [
     { label: nt("about"), href: "/about" },
@@ -96,7 +98,7 @@ export default function Footer() {
             </a>
             <div className="mt-4">
               <Link
-                href={DOWNLOAD_URL}
+                href={downloadUrl}
                 className="inline-block text-sm font-display font-semibold amber-gradient text-surface-base px-4 py-2 rounded-[var(--radius-sm)] hover:opacity-90 transition-opacity duration-200"
               >
                 {t("download_app")}

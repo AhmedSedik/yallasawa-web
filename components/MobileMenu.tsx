@@ -5,7 +5,7 @@ import { Download, X } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { DOWNLOAD_URL } from "@/lib/constants";
+import { useRelease } from "@/lib/ReleaseContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 interface MobileMenuProps {
@@ -21,6 +21,7 @@ const linkVariants = {
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const t = useTranslations("nav");
   const ft = useTranslations("footer");
+  const { downloadUrl } = useRelease();
 
   const navLinks = [
     { label: t("about"), href: "/about" },
@@ -119,7 +120,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 transition={{ delay: 0.35 }}
               >
                 <Link
-                  href={DOWNLOAD_URL}
+                  href={downloadUrl}
                   onClick={onClose}
                   className="amber-gradient flex w-full items-center justify-center gap-2 rounded-sm py-3 font-display font-semibold text-surface-base transition-opacity duration-200 hover:opacity-90"
                 >

@@ -7,13 +7,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { DOWNLOAD_URL } from "@/lib/constants";
+import { useRelease } from "@/lib/ReleaseContext";
 
 import MobileMenu from "./MobileMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const t = useTranslations("nav");
+  const { downloadUrl } = useRelease();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -77,7 +78,7 @@ export default function Navbar() {
           <div className="hidden items-center gap-4 md:flex">
             <LanguageSwitcher />
             <Link
-              href={DOWNLOAD_URL}
+              href={downloadUrl}
               className="amber-gradient flex items-center gap-2 rounded-sm px-5 py-2 font-display text-sm font-semibold text-surface-base transition-opacity duration-200 hover:opacity-90"
             >
               <Download size={16} />

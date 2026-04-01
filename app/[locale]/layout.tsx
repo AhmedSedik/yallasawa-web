@@ -6,6 +6,8 @@ import { jakartaSans, vietnamPro, cairo } from "../fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { routing } from "@/i18n/routing";
+import { getLatestRelease } from "@/lib/github";
+import { ReleaseProvider } from "@/lib/ReleaseContext";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  const [messages, release] = await Promise.all([getMessages(), getLatestRelease()]);
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
@@ -55,9 +57,11 @@ export default async function LocaleLayout({
     >
       <body className={`min-h-full flex flex-col ${locale === "ar" ? "font-arabic" : ""}`}>
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <main className="flex-1 pt-16">{children}</main>
-          <Footer />
+          <ReleaseProvider release={release}>
+            <Navbar />
+            <main className="flex-1 pt-16">{children}</main>
+            <Footer />
+          </ReleaseProvider>
         </NextIntlClientProvider>
       </body>
     </html>
