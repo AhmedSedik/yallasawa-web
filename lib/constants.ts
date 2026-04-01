@@ -1,6 +1,6 @@
 // Download URLs
 export const DOWNLOAD_URL = "https://github.com/AhmedSedik/yalla_forga/releases/latest/download/YallaSawa.Setup.0.6.1-beta.exe";
-export const APP_VERSION = "0.1.0-beta";
+export const APP_VERSION = "0.6.1-beta";
 
 // Navigation links
 export const NAV_LINKS = [
