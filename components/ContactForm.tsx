@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 export default function ContactForm() {
   const t = useTranslations("contact");
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   const subjects = [
     t("subject_general"),
@@ -16,9 +18,38 @@ export default function ContactForm() {
     t("subject_legal"),
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError("");
+    setSending(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          subject: formData.get("subject"),
+          message: formData.get("message"),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Failed to send");
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   if (submitted) {
@@ -46,6 +77,7 @@ export default function ContactForm() {
         </label>
         <input
           id="name"
+          name="name"
           type="text"
           required
           className="w-full rounded-sm bg-surface-low border border-glass-border px-4 py-3 text-sm text-text-primary placeholder:text-outline focus:border-cyan/40 focus:outline-none transition-colors"
@@ -58,6 +90,7 @@ export default function ContactForm() {
         </label>
         <input
           id="email"
+          name="email"
           type="email"
           required
           dir="ltr"
@@ -71,6 +104,7 @@ export default function ContactForm() {
         </label>
         <select
           id="subject"
+          name="subject"
           required
           className="w-full rounded-sm bg-surface-low border border-glass-border px-4 py-3 text-sm text-text-primary focus:border-cyan/40 focus:outline-none transition-colors appearance-none"
         >
@@ -86,6 +120,7 @@ export default function ContactForm() {
         </label>
         <textarea
           id="message"
+          name="message"
           rows={5}
           required
           dir="auto"
@@ -93,14 +128,18 @@ export default function ContactForm() {
           placeholder={t("form_placeholder_message")}
         />
       </div>
+
+      {error && <p className="text-sm text-red-400">{error}</p>}
+
       <motion.button
         type="submit"
-        className="amber-gradient flex w-full items-center justify-center gap-2 rounded-sm py-3.5 font-display font-semibold text-surface-base transition-all duration-200 hover:brightness-110"
+        disabled={sending}
+        className="amber-gradient flex w-full items-center justify-center gap-2 rounded-sm py-3.5 font-display font-semibold text-surface-base transition-all duration-200 hover:brightness-110 disabled:opacity-50"
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
       >
         <Send className="h-4 w-4" />
-        {t("form_submit")}
+        {sending ? "Sending..." : t("form_submit")}
       </motion.button>
     </form>
   );

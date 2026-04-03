@@ -14,6 +14,7 @@ export const LEGAL_LINKS = [
 
 // Contact
 export const CONTACT_EMAIL = "support@yalla-sawa.com";
+export const INFO_EMAIL = "info@yalla-sawa.com";
 export const LEGAL_EMAIL = "legal@yalla-sawa.com";
 
 // Social links
