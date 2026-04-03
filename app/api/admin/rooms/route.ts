@@ -34,6 +34,7 @@ export async function GET(request: Request) {
       memberCount: d.memberCount || 0,
       peakMembers: d.peakMembers || 0,
       totalUniqueMembers: d.totalUniqueMembers?.length || 0,
+      isBot: d.isBot || false,
       createdAt: d.createdAt?.toDate?.()?.toISOString() || null,
       endedAt: d.endedAt?.toDate?.()?.toISOString() || null,
     };

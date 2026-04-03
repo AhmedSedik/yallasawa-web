@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Bot, XCircle, Trash2 } from "lucide-react";
 import Pagination from "./Pagination";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface RoomEntry {
   id: string;
@@ -13,6 +15,7 @@ interface RoomEntry {
   memberCount: number;
   peakMembers: number;
   totalUniqueMembers: number;
+  isBot: boolean;
   createdAt: string | null;
   endedAt: string | null;
 }
@@ -31,6 +34,9 @@ export default function RoomsTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [confirmAction, setConfirmAction] = useState<"close-stale" | "delete-non-bot" | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [togglingBot, setTogglingBot] = useState<string | null>(null);
 
   const fetchRooms = useCallback(async () => {
     setLoading(true);
@@ -48,9 +54,52 @@ export default function RoomsTable() {
 
   useEffect(() => { fetchRooms(); }, [fetchRooms]);
 
+  async function handleCleanup() {
+    if (!confirmAction) return;
+    setActionLoading(true);
+    const res = await fetch("/api/admin/rooms/cleanup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: confirmAction }),
+    });
+    const data = await res.json();
+    setActionLoading(false);
+    setConfirmAction(null);
+
+    if (data.success) {
+      fetchRooms();
+    }
+  }
+
+  async function toggleBot(roomId: string, currentIsBot: boolean) {
+    setTogglingBot(roomId);
+    await fetch(`/api/admin/rooms/${roomId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isBot: !currentIsBot }),
+    });
+    setRooms((prev) =>
+      prev.map((r) => r.id === roomId ? { ...r, isBot: !currentIsBot } : r)
+    );
+    setTogglingBot(null);
+  }
+
+  const confirmMessages = {
+    "close-stale": {
+      title: "Close Stale Rooms",
+      message: "This will mark all active non-bot rooms as ended. Bot rooms will be preserved. Continue?",
+      label: "Close All",
+    },
+    "delete-non-bot": {
+      title: "Delete All Non-Bot Rooms",
+      message: "This will permanently delete ALL rooms that are not flagged as bot. This cannot be undone. Continue?",
+      label: "Delete All",
+    },
+  };
+
   return (
     <div>
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
         <select
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
@@ -60,7 +109,25 @@ export default function RoomsTable() {
           <option value="active">Active</option>
           <option value="ended">Ended</option>
         </select>
+
         <p className="text-xs text-outline">{total} rooms total</p>
+
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={() => setConfirmAction("close-stale")}
+            className="flex items-center gap-1.5 rounded-md bg-amber-500/15 px-3 py-2 text-xs text-amber-400 hover:bg-amber-500/25 transition-colors"
+          >
+            <XCircle size={14} />
+            Close Stale Active
+          </button>
+          <button
+            onClick={() => setConfirmAction("delete-non-bot")}
+            className="flex items-center gap-1.5 rounded-md bg-red-500/15 px-3 py-2 text-xs text-red-400 hover:bg-red-500/25 transition-colors"
+          >
+            <Trash2 size={14} />
+            Delete All Non-Bot
+          </button>
+        </div>
       </div>
 
       <div className="rounded-lg overflow-hidden">
@@ -74,16 +141,17 @@ export default function RoomsTable() {
               <th className="px-4 py-3 font-medium">Peak</th>
               <th className="px-4 py-3 font-medium">Unique</th>
               <th className="px-4 py-3 font-medium">Created</th>
+              <th className="px-4 py-3 font-medium">Bot</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-outline">Loading...</td>
+                <td colSpan={8} className="px-4 py-8 text-center text-outline">Loading...</td>
               </tr>
             ) : rooms.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-outline">No rooms found</td>
+                <td colSpan={8} className="px-4 py-8 text-center text-outline">No rooms found</td>
               </tr>
             ) : (
               rooms.map((room) => (
@@ -107,6 +175,20 @@ export default function RoomsTable() {
                   <td className="px-4 py-3 text-outline">{room.peakMembers}</td>
                   <td className="px-4 py-3 text-outline">{room.totalUniqueMembers}</td>
                   <td className="px-4 py-3 text-outline">{formatDate(room.createdAt)}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => toggleBot(room.id, room.isBot)}
+                      disabled={togglingBot === room.id}
+                      className={`rounded-md p-1.5 transition-colors ${
+                        room.isBot
+                          ? "bg-blue-500/20 text-blue-400"
+                          : "text-outline/40 hover:bg-surface-high hover:text-outline"
+                      }`}
+                      title={room.isBot ? "Bot room (click to unflag)" : "Flag as bot room"}
+                    >
+                      <Bot size={16} />
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
@@ -115,6 +197,18 @@ export default function RoomsTable() {
       </div>
 
       <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+
+      {confirmAction && (
+        <ConfirmDialog
+          open
+          title={confirmMessages[confirmAction].title}
+          message={confirmMessages[confirmAction].message}
+          confirmLabel={confirmMessages[confirmAction].label}
+          onConfirm={handleCleanup}
+          onCancel={() => setConfirmAction(null)}
+          loading={actionLoading}
+        />
+      )}
     </div>
   );
 }
