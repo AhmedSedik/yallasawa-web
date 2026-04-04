@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, DoorOpen, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, DoorOpen, BarChart3, LogOut } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/rooms", label: "Rooms", icon: DoorOpen },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export default function AdminSidebar() {
