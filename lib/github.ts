@@ -14,14 +14,18 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
     }
 
-    const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+    // Use /releases (not /releases/latest) to include prereleases
+    const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=1`, {
       next: { revalidate: 300 }, // revalidate every 5 minutes
       headers,
     });
 
     if (!res.ok) throw new Error(`GitHub API ${res.status}`);
 
-    const data = await res.json();
+    const releases = await res.json();
+    const data = releases[0];
+    if (!data) throw new Error("No releases found");
+
     const tag: string = data.tag_name?.replace(/^v/, "") ?? FALLBACK_VERSION;
 
     const exeAsset = data.assets?.find(
