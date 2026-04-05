@@ -20,11 +20,17 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       headers,
     });
 
-    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    if (!res.ok) {
+      console.error(`[GitHub Release] API error: ${res.status} ${res.statusText}`);
+      throw new Error(`GitHub API ${res.status}`);
+    }
 
     const releases = await res.json();
     const data = releases[0];
-    if (!data) throw new Error("No releases found");
+    if (!data) {
+      console.error("[GitHub Release] No releases found in response");
+      throw new Error("No releases found");
+    }
 
     const tag: string = data.tag_name?.replace(/^v/, "") ?? FALLBACK_VERSION;
 
@@ -32,11 +38,14 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       (a: { name: string }) => a.name.endsWith(".exe")
     );
 
+    console.log(`[GitHub Release] Found: v${tag}, exe: ${exeAsset?.name ?? "NONE"}`);
+
     return {
       version: tag,
       downloadUrl: exeAsset?.browser_download_url ?? FALLBACK_URL,
     };
-  } catch {
+  } catch (err) {
+    console.error("[GitHub Release] Fallback used:", err);
     return { version: FALLBACK_VERSION, downloadUrl: FALLBACK_URL };
   }
 }
