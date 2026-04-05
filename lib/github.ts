@@ -14,8 +14,8 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
     }
 
-    // Use /releases (not /releases/latest) to include prereleases
-    const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=1`, {
+    // Fetch recent releases and pick the most recently published one
+    const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=10`, {
       next: { revalidate: 300 }, // revalidate every 5 minutes
       headers,
     });
@@ -25,17 +25,28 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       throw new Error(`GitHub API ${res.status}`);
     }
 
-    const releases = await res.json();
-    const data = releases[0];
+    const releases: Array<{
+      tag_name: string;
+      published_at: string;
+      draft: boolean;
+      assets: Array<{ name: string; browser_download_url: string }>;
+    }> = await res.json();
+
+    // Filter out drafts and sort by published_at descending
+    const published = releases
+      .filter((r) => !r.draft)
+      .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+
+    const data = published[0];
     if (!data) {
-      console.error("[GitHub Release] No releases found in response");
+      console.error("[GitHub Release] No published releases found");
       throw new Error("No releases found");
     }
 
     const tag: string = data.tag_name?.replace(/^v/, "") ?? FALLBACK_VERSION;
 
     const exeAsset = data.assets?.find(
-      (a: { name: string }) => a.name.endsWith(".exe")
+      (a) => a.name.endsWith(".exe")
     );
 
     console.log(`[GitHub Release] Found: v${tag}, exe: ${exeAsset?.name ?? "NONE"}`);
