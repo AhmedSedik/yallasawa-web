@@ -1,6 +1,6 @@
 const REPO = "AhmedSedik/yalla_forga";
-const FALLBACK_VERSION = "0.6.5-beta";
-const FALLBACK_URL = `https://github.com/${REPO}/releases/latest/download/YallaSawa.Setup.${FALLBACK_VERSION}.exe`;
+const FALLBACK_VERSION = "0.8.1-beta";
+const FALLBACK_URL = `https://github.com/${REPO}/releases/download/v${FALLBACK_VERSION}/YallaSawa.Setup.${FALLBACK_VERSION}.exe`;
 
 export interface ReleaseInfo {
   version: string;
