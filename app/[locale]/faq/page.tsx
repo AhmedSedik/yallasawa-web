@@ -1,82 +1,73 @@
-"use client";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { SITE_URL } from "@/lib/constants";
+import FAQContent from "./faq-content";
 
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import FAQAccordion from "@/components/FAQAccordion";
-import { ScrollReveal } from "@/components/ScrollReveal";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "metadata" });
 
-export default function FAQPage() {
-  const t = useTranslations("faq");
+  return {
+    title: t("faq_title"),
+    description: t("faq_description"),
+    alternates: {
+      canonical: `${SITE_URL}/${locale}/faq`,
+      languages: {
+        en: `${SITE_URL}/en/faq`,
+        ar: `${SITE_URL}/ar/faq`,
+        "x-default": `${SITE_URL}/en/faq`,
+      },
+    },
+    openGraph: {
+      title: t("faq_title"),
+      description: t("faq_description"),
+      url: `${SITE_URL}/${locale}/faq`,
+    },
+  };
+}
 
-  const faqCategories = [
-    {
-      title: t("getting_started"),
-      items: [
-        { question: t("q_what_is"), answer: t("a_what_is") },
-        { question: t("q_install"), answer: t("a_install") },
-        { question: t("q_platforms"), answer: t("a_platforms") },
-        { question: t("q_free"), answer: t("a_free") },
-      ],
-    },
-    {
-      title: t("using_app"),
-      items: [
-        { question: t("q_create_party"), answer: t("a_create_party") },
-        { question: t("q_sync"), answer: t("a_sync") },
-        { question: t("q_any_video"), answer: t("a_any_video") },
-        { question: t("q_queue"), answer: t("a_queue") },
-      ],
-    },
-    {
-      title: t("technical"),
-      items: [
-        { question: t("q_drm"), answer: t("a_drm") },
-        { question: t("q_latency"), answer: t("a_latency") },
-        { question: t("q_secure"), answer: t("a_secure") },
-      ],
-    },
-    {
-      title: t("legal"),
-      items: [
-        { question: t("q_legal"), answer: t("a_legal") },
-        { question: t("q_host_content"), answer: t("a_host_content") },
-        { question: t("q_data_collect"), answer: t("a_data_collect") },
-      ],
-    },
-  ];
+const faqKeys = [
+  "q_what_is", "q_install", "q_platforms", "q_free",
+  "q_create_party", "q_sync", "q_any_video", "q_queue",
+  "q_drm", "q_latency", "q_secure",
+  "q_legal", "q_host_content", "q_data_collect",
+] as const;
+
+export default async function FAQPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "faq" });
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqKeys.map((qKey) => {
+      const aKey = qKey.replace("q_", "a_");
+      return {
+        "@type": "Question",
+        name: t(qKey),
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: t(aKey),
+        },
+      };
+    }),
+  };
 
   return (
-    <section className="px-6 py-24">
-      <div className="mx-auto max-w-3xl">
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <span className="inline-block rounded-full bg-cyan/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-cyan">
-              {t("badge")}
-            </span>
-            <h1 className="mt-4 font-display text-4xl font-bold text-text-primary md:text-5xl">
-              {t("heading")}
-            </h1>
-            <p className="mt-4 text-lg text-text-warm">{t("subheading")}</p>
-          </div>
-        </ScrollReveal>
-
-        <FAQAccordion categories={faqCategories} />
-
-        <ScrollReveal>
-          <div className="mt-16 text-center">
-            <h3 className="font-display text-xl font-semibold text-text-primary">
-              {t("still_questions")}
-            </h3>
-            <p className="mt-2 text-text-warm">{t("here_to_help")}</p>
-            <Link
-              href="/contact"
-              className="mt-6 inline-block amber-gradient rounded-sm px-8 py-3 font-display font-semibold text-surface-base transition-opacity hover:opacity-90"
-            >
-              {t("contact_us")}
-            </Link>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <FAQContent />
+    </>
   );
 }

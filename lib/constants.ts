@@ -1,3 +1,6 @@
+// Site URL
+export const SITE_URL = "https://www.yalla-sawa.com";
+
 // Navigation links
 export const NAV_LINKS = [
   { label: "About", href: "/about" },
