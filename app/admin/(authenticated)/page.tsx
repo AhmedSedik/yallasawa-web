@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/firebase-admin";
-import { Users, UserCheck, DoorOpen, Activity, Clock, TrendingUp, Globe, ShieldCheck } from "lucide-react";
+import { Users, UserCheck, DoorOpen, Activity, Clock, TrendingUp, Globe, ShieldCheck, Download, Tag } from "lucide-react";
 import { countryCodeToFlag, countryName } from "@/lib/analytics-utils";
 import StatsCard from "@/components/admin/StatsCard";
 
@@ -10,6 +10,62 @@ function formatMs(ms: number): string {
   return `${mins}m`;
 }
 
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return "today";
+  if (days === 1) return "1 day ago";
+  if (days < 30) return `${days} days ago`;
+  const months = Math.floor(days / 30);
+  return months === 1 ? "1 month ago" : `${months} months ago`;
+}
+
+interface ReleaseData {
+  version: string;
+  name: string;
+  publishedAt: string;
+  prerelease: boolean;
+  exeDownloads: number;
+  totalDownloads: number;
+}
+
+async function fetchReleases(): Promise<{ totalDownloadsAllTime: number; releases: ReleaseData[] }> {
+  try {
+    const headers: HeadersInit = { Accept: "application/vnd.github.v3+json" };
+    if (process.env.GITHUB_TOKEN) {
+      headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    }
+    const res = await fetch("https://api.github.com/repos/AhmedSedik/yalla_forga/releases?per_page=20", {
+      next: { revalidate: 300 },
+      headers,
+    });
+    if (!res.ok) return { totalDownloadsAllTime: 0, releases: [] };
+
+    const allReleases = await res.json();
+    const releases: ReleaseData[] = allReleases
+      .filter((r: { draft: boolean }) => !r.draft)
+      .sort((a: { published_at: string }, b: { published_at: string }) =>
+        new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+      )
+      .map((r: { tag_name: string; name: string; published_at: string; prerelease: boolean; assets: Array<{ name: string; download_count: number }> }) => {
+        const exe = r.assets.find((a) => a.name.endsWith(".exe"));
+        return {
+          version: r.tag_name,
+          name: r.name,
+          publishedAt: r.published_at,
+          prerelease: r.prerelease,
+          exeDownloads: exe?.download_count ?? 0,
+          totalDownloads: r.assets.reduce((sum, a) => sum + a.download_count, 0),
+        };
+      });
+
+    const totalDownloadsAllTime = releases.reduce((sum: number, r: ReleaseData) => sum + r.exeDownloads, 0);
+    return { totalDownloadsAllTime, releases };
+  } catch {
+    return { totalDownloadsAllTime: 0, releases: [] };
+  }
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
@@ -17,9 +73,10 @@ export default async function AdminDashboard() {
   const usersRef = db.collection("users");
   const roomsRef = db.collection("rooms");
 
-  const [usersSnap, roomsSnap] = await Promise.all([
+  const [usersSnap, roomsSnap, releaseData] = await Promise.all([
     usersRef.get(),
     roomsRef.get(),
+    fetchReleases(),
   ]);
 
   let totalUsers = 0;
@@ -158,6 +215,62 @@ export default async function AdminDashboard() {
           )}
         </div>
       </div>
+
+      {/* Downloads & Releases */}
+      <h2 className="text-sm font-display font-semibold text-outline mt-8 mb-3">Downloads & Releases</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <StatsCard
+          label="Total Downloads"
+          value={releaseData.totalDownloadsAllTime}
+          subtext="All releases (exe)"
+          icon={Download}
+        />
+        <StatsCard
+          label="Latest Release"
+          value={releaseData.releases[0]?.version ?? "N/A"}
+          subtext={releaseData.releases[0] ? timeAgo(releaseData.releases[0].publishedAt) : ""}
+          icon={Tag}
+          accent="cyan"
+        />
+        <StatsCard
+          label="Latest Downloads"
+          value={releaseData.releases[0]?.exeDownloads ?? 0}
+          subtext={releaseData.releases[0]?.version ?? ""}
+          icon={Download}
+          accent="cyan"
+        />
+      </div>
+
+      {releaseData.releases.length > 0 && (
+        <div className="glass glass-border rounded-lg p-5">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm text-outline">Release History</span>
+            <Download size={18} className="text-cta-amber-light" />
+          </div>
+          <div className="space-y-3">
+            {releaseData.releases.map((release) => (
+              <div key={release.version} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="font-display text-sm font-semibold text-text-primary">
+                    {release.version}
+                  </span>
+                  {release.prerelease && (
+                    <span className="rounded-full bg-cta-amber-light/10 px-2 py-0.5 text-[10px] font-semibold text-cta-amber-light">
+                      pre-release
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="text-outline">{timeAgo(release.publishedAt)}</span>
+                  <span className="font-display font-semibold text-cyan">
+                    {release.exeDownloads} <span className="text-xs text-outline font-normal">dl</span>
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
