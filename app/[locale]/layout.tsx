@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { routing } from "@/i18n/routing";
 import { getLatestRelease } from "@/lib/github";
 import { ReleaseProvider } from "@/lib/ReleaseContext";
+import PageViewTracker from "@/components/PageViewTracker";
 import { SITE_URL } from "@/lib/constants";
 import "../globals.css";
 
@@ -118,6 +119,7 @@ export default async function LocaleLayout({
       <body className={`min-h-full flex flex-col ${locale === "ar" ? "font-arabic" : ""}`}>
         <NextIntlClientProvider messages={messages}>
           <ReleaseProvider release={release}>
+            <PageViewTracker locale={locale} />
             <Navbar />
             <main className="flex-1 pt-16">{children}</main>
             <Footer />
