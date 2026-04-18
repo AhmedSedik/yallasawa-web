@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors (from app icon) */
-  --color-cyan: #3BEABD;
-  --color-cyan-light: #6FF0D0;
+  /* Brand Accent (amber-gold — matches new icon) */
+  --color-cyan: #ffd68a;
+  --color-cyan-light: #ffe8b8;
   --color-coral: #FF6B5A;
 
   /* CTA Colors (amber — buttons only) */
@@ -23,10 +23,10 @@
   --color-text-warm: #d4c5ab;
   --color-outline: #9c8f78;
 
-  /* Glass (cyan-tinted) */
+  /* Glass (amber-tinted) */
   --color-glass: rgba(39, 42, 50, 0.5);
-  --color-glass-border: rgba(59, 234, 189, 0.12);
-  --color-glass-border-hover: rgba(59, 234, 189, 0.25);
+  --color-glass-border: rgba(255, 214, 138, 0.12);
+  --color-glass-border-hover: rgba(255, 214, 138, 0.25);
 
   /* Border Radius */
   --radius-sm: 10px;
@@ -74,13 +74,13 @@ body {
   background-clip: text;
 }
 
-/* Cyan Glow (brand accent) */
+/* Amber Glow (brand accent) */
 .cyan-glow {
-  box-shadow: 0 0 60px rgba(59, 234, 189, 0.15), 0 0 120px rgba(59, 234, 189, 0.08);
+  box-shadow: 0 0 60px rgba(255, 214, 138, 0.15), 0 0 120px rgba(255, 214, 138, 0.08);
 }
 
 .cyan-glow-sm {
-  box-shadow: 0 0 30px rgba(59, 234, 189, 0.1), 0 0 60px rgba(59, 234, 189, 0.05);
+  box-shadow: 0 0 30px rgba(255, 214, 138, 0.1), 0 0 60px rgba(255, 214, 138, 0.05);
 }
 
 /* Smooth scrolling */
@@ -90,7 +90,7 @@ html {
 
 /* Selection color */
 ::selection {
-  background-color: rgba(59, 234, 189, 0.3);
+  background-color: rgba(255, 214, 138, 0.3);
   color: var(--color-text-primary);
 }
 
