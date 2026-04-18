@@ -3,6 +3,30 @@ import { getTranslations } from "next-intl/server";
 import { SITE_URL } from "@/lib/constants";
 import ChangelogContent from "./changelog-content";
 
+const CHANGELOG_API =
+  "https://yallaforgaserver-production.up.railway.app/api/changelog";
+
+interface ChangelogSection {
+  type: "Added" | "Changed" | "Fixed";
+  items: string[];
+}
+
+interface ChangelogEntry {
+  version: string;
+  date: string;
+  sections: ChangelogSection[];
+}
+
+async function getChangelog(): Promise<ChangelogEntry[]> {
+  try {
+    const res = await fetch(CHANGELOG_API, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -30,6 +54,7 @@ export async function generateMetadata({
   };
 }
 
-export default function ChangelogPage() {
-  return <ChangelogContent />;
+export default async function ChangelogPage() {
+  const entries = await getChangelog();
+  return <ChangelogContent entries={entries} />;
 }

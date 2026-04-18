@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Plus, RefreshCw, Wrench, AlertCircle, Loader2 } from "lucide-react";
+import { Plus, RefreshCw, Wrench } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
 interface ChangelogSection {
@@ -16,8 +15,9 @@ interface ChangelogEntry {
   sections: ChangelogSection[];
 }
 
-const CHANGELOG_API =
-  "https://yallaforgaserver-production.up.railway.app/api/changelog";
+interface ChangelogContentProps {
+  entries: ChangelogEntry[];
+}
 
 const sectionConfig: Record<
   string,
@@ -47,29 +47,9 @@ function formatDate(dateStr: string, locale: string) {
   }
 }
 
-export default function ChangelogContent() {
+export default function ChangelogContent({ entries }: ChangelogContentProps) {
   const t = useTranslations("changelog");
   const locale = useLocale();
-  const [entries, setEntries] = useState<ChangelogEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchChangelog() {
-      try {
-        const res = await fetch(CHANGELOG_API);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data: ChangelogEntry[] = await res.json();
-        setEntries(data);
-      } catch {
-        setError("failed");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchChangelog();
-  }, []);
 
   return (
     <section className="px-6 py-24">
@@ -87,43 +67,8 @@ export default function ChangelogContent() {
           </div>
         </ScrollReveal>
 
-        {/* Loading */}
-        {loading && (
-          <div className="mt-20 flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan" />
-            <p className="text-text-warm">{t("loading")}</p>
-          </div>
-        )}
-
-        {/* Error */}
-        {error && !loading && (
-          <div className="mt-20 flex flex-col items-center gap-4 text-center">
-            <div className="inline-flex rounded-md bg-red-400/10 p-3">
-              <AlertCircle className="h-6 w-6 text-red-400" />
-            </div>
-            <p className="text-text-warm">{t("error")}</p>
-            <button
-              onClick={() => {
-                setError(null);
-                setLoading(true);
-                fetch(CHANGELOG_API)
-                  .then((r) => {
-                    if (!r.ok) throw new Error();
-                    return r.json();
-                  })
-                  .then(setEntries)
-                  .catch(() => setError("failed"))
-                  .finally(() => setLoading(false));
-              }}
-              className="text-sm font-medium text-cyan hover:underline"
-            >
-              {t("retry")}
-            </button>
-          </div>
-        )}
-
         {/* Changelog entries */}
-        {!loading && !error && entries.length > 0 && (
+        {entries.length > 0 ? (
           <div className="relative mt-20">
             {/* Timeline line */}
             <div className="absolute start-[19px] top-2 bottom-0 w-px bg-surface-high md:start-[23px]" />
@@ -163,7 +108,7 @@ export default function ChangelogContent() {
                                 className={`inline-flex items-center gap-1.5 rounded-md ${config.bg} px-2.5 py-1 text-xs font-semibold ${config.color}`}
                               >
                                 <Icon size={12} />
-                                {t(`section_${section.type.toLowerCase()}`)}
+                                {section.type}
                               </span>
                             </div>
 
@@ -203,10 +148,7 @@ export default function ChangelogContent() {
               ))}
             </div>
           </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && !error && entries.length === 0 && (
+        ) : (
           <div className="mt-20 text-center">
             <p className="text-text-warm">{t("empty")}</p>
           </div>
