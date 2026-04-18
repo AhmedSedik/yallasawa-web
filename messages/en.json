@@ -3,6 +3,7 @@
     "about": "About",
     "faq": "FAQ",
     "contact": "Contact",
+    "changelog": "Changelog",
     "download": "Download"
   },
   "hero": {
@@ -127,6 +128,18 @@
     "subject_feature": "Feature Request",
     "subject_legal": "Legal / Privacy"
   },
+  "changelog": {
+    "badge": "What's New",
+    "heading": "Changelog",
+    "subheading": "Follow every update, fix, and new feature across all releases.",
+    "loading": "Loading changelog...",
+    "error": "Couldn't load the changelog. Please try again.",
+    "retry": "Try again",
+    "empty": "No releases yet. Check back soon!",
+    "section_added": "Added",
+    "section_changed": "Changed",
+    "section_fixed": "Fixed"
+  },
   "footer": {
     "tagline": "The first app for Arabic streaming watch parties.",
     "product": "Product",
@@ -237,6 +250,8 @@
     "terms_title": "Terms of Service — YallaSawa",
     "terms_description": "The rules and guidelines for using YallaSawa. Read our acceptable use policy, intellectual property terms, and liability disclaimer.",
     "disclaimer_title": "Disclaimer — YallaSawa Beta",
-    "disclaimer_description": "Important information about YallaSawa's beta status, no-warranty policy, third-party content limitations, and liability terms."
+    "disclaimer_description": "Important information about YallaSawa's beta status, no-warranty policy, third-party content limitations, and liability terms.",
+    "changelog_title": "Changelog — YallaSawa",
+    "changelog_description": "See what's new in every release of YallaSawa. Full release history with features, changes, and bug fixes."
   }
 }

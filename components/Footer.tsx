@@ -14,6 +14,7 @@ export default function Footer() {
   const navLinks = [
     { label: nt("about"), href: "/about" },
     { label: nt("faq"), href: "/faq" },
+    { label: nt("changelog"), href: "/changelog" },
     { label: nt("contact"), href: "/contact" },
   ];
 
