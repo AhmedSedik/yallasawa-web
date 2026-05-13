@@ -46,10 +46,12 @@ export default function HowItWorks() {
 
                 {/* Text */}
                 <h3 className="mt-4 font-display text-lg font-semibold text-text-primary">
-                  {t(step.titleKey)}
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {t(step.titleKey as any)}
                 </h3>
                 <p className="mt-2 text-sm text-text-warm">
-                  {t(step.descKey)}
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {t(step.descKey as any)}
                 </p>
               </div>
             </ScrollReveal>

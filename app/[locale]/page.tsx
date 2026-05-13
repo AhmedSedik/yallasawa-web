@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SITE_URL } from "@/lib/constants";
+import { localizedAlternates, localizedOgUrl } from "@/lib/metadata";
+import type { Locale } from "@/i18n/routing";
 import Hero from "@/components/Hero";
 import FeatureCards from "@/components/FeatureCards";
 import HowItWorks from "@/components/HowItWorks";
@@ -11,24 +13,18 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: raw } = await params;
+  const locale = raw as Locale;
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
     title: t("home_title"),
     description: t("home_description"),
-    alternates: {
-      canonical: `${SITE_URL}/${locale}`,
-      languages: {
-        en: `${SITE_URL}/en`,
-        ar: `${SITE_URL}/ar`,
-        "x-default": `${SITE_URL}/en`,
-      },
-    },
+    alternates: localizedAlternates(locale, ""),
     openGraph: {
       title: t("home_title"),
       description: t("home_description"),
-      url: `${SITE_URL}/${locale}`,
+      url: localizedOgUrl(locale, ""),
     },
   };
 }

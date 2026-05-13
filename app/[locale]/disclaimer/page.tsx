@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { SITE_URL } from "@/lib/constants";
+import { localizedAlternates, localizedOgUrl } from "@/lib/metadata";
+import type { Locale } from "@/i18n/routing";
 import DisclaimerContent from "./disclaimer-content";
 
 export async function generateMetadata({
@@ -8,24 +9,18 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: raw } = await params;
+  const locale = raw as Locale;
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
     title: t("disclaimer_title"),
     description: t("disclaimer_description"),
-    alternates: {
-      canonical: `${SITE_URL}/${locale}/disclaimer`,
-      languages: {
-        en: `${SITE_URL}/en/disclaimer`,
-        ar: `${SITE_URL}/ar/disclaimer`,
-        "x-default": `${SITE_URL}/en/disclaimer`,
-      },
-    },
+    alternates: localizedAlternates(locale, "/disclaimer"),
     openGraph: {
       title: t("disclaimer_title"),
       description: t("disclaimer_description"),
-      url: `${SITE_URL}/${locale}/disclaimer`,
+      url: localizedOgUrl(locale, "/disclaimer"),
     },
   };
 }

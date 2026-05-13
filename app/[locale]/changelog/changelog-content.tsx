@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Plus, RefreshCw, Wrench } from "lucide-react";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { localeConfig, type Locale } from "@/i18n/routing";
 
 interface ChangelogSection {
   type: "Added" | "Changed" | "Fixed";
@@ -36,12 +37,13 @@ function parseItem(raw: string) {
   return { name: "", description: raw };
 }
 
-function formatDate(dateStr: string, locale: string) {
+function formatDate(dateStr: string, locale: Locale) {
   try {
-    return new Date(dateStr).toLocaleDateString(
-      locale === "ar" ? "ar-EG" : "en-US",
-      { year: "numeric", month: "long", day: "numeric" }
-    );
+    return new Date(dateStr).toLocaleDateString(localeConfig[locale].dateLocale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   } catch {
     return dateStr;
   }
@@ -49,7 +51,7 @@ function formatDate(dateStr: string, locale: string) {
 
 export default function ChangelogContent({ entries }: ChangelogContentProps) {
   const t = useTranslations("changelog");
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
 
   return (
     <section className="px-6 py-24">

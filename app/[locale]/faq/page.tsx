@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { SITE_URL } from "@/lib/constants";
+import { localizedAlternates, localizedOgUrl } from "@/lib/metadata";
+import type { Locale } from "@/i18n/routing";
 import FAQContent from "./faq-content";
 
 export async function generateMetadata({
@@ -8,24 +9,18 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: raw } = await params;
+  const locale = raw as Locale;
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
     title: t("faq_title"),
     description: t("faq_description"),
-    alternates: {
-      canonical: `${SITE_URL}/${locale}/faq`,
-      languages: {
-        en: `${SITE_URL}/en/faq`,
-        ar: `${SITE_URL}/ar/faq`,
-        "x-default": `${SITE_URL}/en/faq`,
-      },
-    },
+    alternates: localizedAlternates(locale, "/faq"),
     openGraph: {
       title: t("faq_title"),
       description: t("faq_description"),
-      url: `${SITE_URL}/${locale}/faq`,
+      url: localizedOgUrl(locale, "/faq"),
     },
   };
 }
@@ -42,7 +37,8 @@ export default async function FAQPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "faq" });
 
   const faqSchema = {
@@ -52,10 +48,12 @@ export default async function FAQPage({
       const aKey = qKey.replace("q_", "a_");
       return {
         "@type": "Question",
-        name: t(qKey),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        name: t(qKey as any),
         acceptedAnswer: {
           "@type": "Answer",
-          text: t(aKey),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          text: t(aKey as any),
         },
       };
     }),

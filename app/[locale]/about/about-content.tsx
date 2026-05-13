@@ -66,9 +66,11 @@ export default function AboutContent() {
                     <item.icon className="h-6 w-6 text-cyan" />
                   </div>
                   <h3 className="font-display text-lg font-semibold text-text-primary">
-                    {t(item.titleKey)}
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {t(item.titleKey as any)}
                   </h3>
-                  <p className="mt-2 text-sm text-text-warm">{t(item.descKey)}</p>
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  <p className="mt-2 text-sm text-text-warm">{t(item.descKey as any)}</p>
                 </GlassCard>
               </ScrollReveal>
             ))}

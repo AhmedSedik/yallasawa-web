@@ -5,11 +5,13 @@ import { notFound } from "next/navigation";
 import { jakartaSans, vietnamPro, cairo } from "../fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { routing } from "@/i18n/routing";
+import LocaleHintBanner from "@/components/LocaleHintBanner";
+import { routing, localeConfig, locales, type Locale } from "@/i18n/routing";
 import { getLatestRelease } from "@/lib/github";
 import { ReleaseProvider } from "@/lib/ReleaseContext";
 import PageViewTracker from "@/components/PageViewTracker";
 import { SITE_URL } from "@/lib/constants";
+import { localizedAlternates } from "@/lib/metadata";
 import "../globals.css";
 
 export const viewport: Viewport = {
@@ -22,8 +24,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  if (!hasLocale(routing.locales, rawLocale)) return {};
+  const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "metadata" });
+  const meta = localeConfig[locale];
+  const alternateOgLocales = locales
+    .filter((l) => l !== locale)
+    .map((l) => localeConfig[l].ogLocale);
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -37,8 +45,8 @@ export async function generateMetadata({
       description: t("home_description"),
       siteName: t("site_name"),
       type: "website",
-      locale: locale === "ar" ? "ar_SA" : "en_US",
-      alternateLocale: locale === "ar" ? "en_US" : "ar_SA",
+      locale: meta.ogLocale,
+      alternateLocale: alternateOgLocales,
       images: [
         {
           url: "/images/yallasawa-brand-card.png",
@@ -64,14 +72,7 @@ export async function generateMetadata({
     icons: {
       icon: "/images/yallasawa-icon-transparent.png",
     },
-    alternates: {
-      canonical: `${SITE_URL}/${locale}`,
-      languages: {
-        en: `${SITE_URL}/en`,
-        ar: `${SITE_URL}/ar`,
-        "x-default": `${SITE_URL}/en`,
-      },
-    },
+    alternates: localizedAlternates(locale, ""),
   };
 }
 
@@ -82,19 +83,20 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
 
-  if (!hasLocale(routing.locales, locale)) {
+  if (!hasLocale(routing.locales, rawLocale)) {
     notFound();
   }
+  const locale = rawLocale as Locale;
+  const meta = localeConfig[locale];
 
   const [messages, release] = await Promise.all([getMessages(), getLatestRelease()]);
-  const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
     <html
-      lang={locale}
-      dir={dir}
+      lang={meta.htmlLang}
+      dir={meta.dir}
       className={`${jakartaSans.variable} ${vietnamPro.variable} ${cairo.variable} h-full antialiased`}
     >
       <head>
@@ -111,15 +113,16 @@ export default async function LocaleLayout({
               "@type": "WebSite",
               name: "YallaSawa",
               url: SITE_URL,
-              inLanguage: [locale === "ar" ? "ar" : "en"],
+              inLanguage: locales.map((l) => localeConfig[l].htmlLang),
             }),
           }}
         />
       </head>
-      <body className={`min-h-full flex flex-col ${locale === "ar" ? "font-arabic" : ""}`}>
-        <NextIntlClientProvider messages={messages}>
+      <body className={`min-h-full flex flex-col ${meta.fontClass ?? ""}`}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
           <ReleaseProvider release={release}>
             <PageViewTracker locale={locale} />
+            <LocaleHintBanner currentLocale={locale} />
             <Navbar />
             <main className="flex-1 pt-16">{children}</main>
             <Footer />

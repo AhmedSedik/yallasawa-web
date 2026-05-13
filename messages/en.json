@@ -155,6 +155,12 @@
     "badge": "Legal",
     "last_updated": "Last updated: April 1, 2026"
   },
+  "locale_hint": {
+    "message": "View this site in {language}?",
+    "switch": "Switch",
+    "dismiss": "Dismiss",
+    "keep_current": "Keep English"
+  },
   "privacy": {
     "title": "Privacy Policy",
     "summary": "How we collect, use, and protect your information.",

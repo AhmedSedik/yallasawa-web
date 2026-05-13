@@ -155,6 +155,12 @@
     "badge": "قانوني",
     "last_updated": "آخر تحديث: ١ أبريل ٢٠٢٦"
   },
+  "locale_hint": {
+    "message": "تحب تشوف الموقع بـ{language}؟",
+    "switch": "غيّر",
+    "dismiss": "إغلاق",
+    "keep_current": "خليها بالعربي"
+  },
   "privacy": {
     "title": "سياسة الخصوصية",
     "summary": "إزاي بنجمع ونستخدم ونحمي معلوماتك.",
