@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion";
 import { Download, Menu } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { useRelease } from "@/lib/ReleaseContext";
+import { BRAND } from "@/lib/brand";
 
+import { BrandLogo } from "./BrandLogo";
 import MobileMenu from "./MobileMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -48,18 +49,16 @@ export default function Navbar() {
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-            <Image
-              src="/images/app-icon.png"
-              alt="YallaSawa"
-              width={36}
-              height={36}
-              className="h-9 w-9 rounded-lg"
+          <Link
+            href="/"
+            className="flex-shrink-0"
+            aria-label={`${BRAND.name} home`}
+          >
+            <BrandLogo
+              iconClassName="h-9 w-9 rounded-lg"
               priority
+              size={36}
             />
-            <span className="font-display text-lg font-bold text-text-primary">
-              yalla<span className="text-cyan">sawa</span>
-            </span>
           </Link>
 
           {/* Desktop nav links — centered */}

@@ -52,7 +52,12 @@ export default function RoomsTable() {
     setLoading(false);
   }, [status, page]);
 
-  useEffect(() => { fetchRooms(); }, [fetchRooms]);
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      void fetchRooms();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchRooms]);
 
   async function handleCleanup() {
     if (!confirmAction) return;

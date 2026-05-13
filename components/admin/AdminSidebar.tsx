@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, DoorOpen, BarChart3, Bug, Eye, LogOut } from "lucide-react";
+import { BrandWordmark } from "@/components/BrandLogo";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -24,8 +25,8 @@ export default function AdminSidebar() {
   return (
     <aside className="flex w-56 flex-col bg-surface-low">
       <div className="p-5">
-        <Link href="/admin" className="text-lg font-display font-bold amber-gradient-text">
-          YallaSawa
+        <Link href="/admin" className="text-lg font-brand font-bold text-white">
+          <BrandWordmark />
         </Link>
         <p className="text-xs text-outline mt-0.5">Admin</p>
       </div>

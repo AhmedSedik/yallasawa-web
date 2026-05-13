@@ -27,7 +27,7 @@ export default function FAQAccordion({ categories }: { categories: FAQCategory[]
         <div key={category.title}>
           <div className="mb-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan/20 to-transparent" />
-            <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-cyan">
+            <h3 className="font-display text-sm font-semibold uppercase text-cyan">
               {category.title}
             </h3>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan/20 to-transparent" />

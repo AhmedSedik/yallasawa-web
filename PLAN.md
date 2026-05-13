@@ -1,8 +1,8 @@
-# YallaSawa Landing Page — Implementation Plan
+# theBarty Landing Page — Implementation Plan
 
 **Date:** 2026-04-01
 **Status:** Planning
-**Target:** Separate repository (`yallasawa-web`)
+**Target:** Separate repository (`thebarty-web`)
 **Framework:** Next.js 16.2 + Tailwind CSS 4 + TypeScript
 **Hosting:** Railway + custom domain
 
@@ -10,7 +10,7 @@
 
 ## 1. Overview
 
-A public-facing landing page for YallaSawa — the video watch-party desktop app. The site serves as the single download hub, legal/compliance center, and product showcase. It mirrors the desktop app's **Amber Cinema-Glass** design system so visitors feel the product before they install it.
+A public-facing landing page for theBarty — the video watch-party desktop app. The site serves as the single download hub, legal/compliance center, and product showcase. It mirrors the desktop app's **Amber Cinema-Glass** design system so visitors feel the product before they install it.
 
 ### Goals
 
@@ -29,7 +29,7 @@ The layout and interaction patterns draw from these best-in-class dark-themed pr
 - **Raycast** (raycast.com) — feature card grids, dark glass aesthetic, clean spacing
 - **Lemon Squeezy** — warm amber/gold tones on dark backgrounds, friendly yet premium
 
-All share DNA with YallaSawa's design tokens (dark surfaces, glass blur, gradient CTAs, tonal layering). The differentiator is our **Amber Cinema-Glass** identity — warm amber accents on deep navy-black surfaces with cinematic depth.
+All share DNA with theBarty's design tokens (dark surfaces, glass blur, gradient CTAs, tonal layering). The differentiator is our **Amber Cinema-Glass** identity — warm amber accents on deep navy-black surfaces with cinematic depth.
 
 ---
 
@@ -37,10 +37,10 @@ All share DNA with YallaSawa's design tokens (dark surfaces, glass blur, gradien
 
 ### 2.1 Separate Repository
 
-The landing page lives in its own repo (`yallasawa-web`), **not** inside the YallaForga monorepo.
+The landing page lives in its own repo (`thebarty-web`), **not** inside the YallaForga monorepo.
 
 **Why separate:**
-- Zero shared code — no dependency on `@yallasawa/shared`
+- Zero shared code — no dependency on `@thebarty/shared`
 - Simpler Railway deploy — push to main = deploy, no workspace config
 - Independent CI/CD — website deploys don't touch app code
 - Cleaner git history — marketing/legal changes isolated from app development
@@ -57,7 +57,7 @@ The landing page lives in its own repo (`yallasawa-web`), **not** inside the Yal
 | Fonts | Self-hosted via `next/font/local` (Plus Jakarta Sans, Be Vietnam Pro, Cairo) | Same fonts as desktop app, no CLS, no CDN dependency |
 | Icons | **Lucide React** | Lightweight, tree-shakable, consistent icon set |
 | Deployment | **Railway** | Same platform as the Socket.IO server, separate service |
-| Domain | `yalla-sawa.com` | Point DNS to Railway, SSL automatic |
+| Domain | `thebarty.com` | Point DNS to Railway, SSL automatic |
 
 ---
 
@@ -155,7 +155,7 @@ The most important page — first impression and conversion funnel.
 
 ### 5.2 About Page (`/about`)
 
-- Product story and vision ("Why we built YallaSawa")
+- Product story and vision ("Why we built theBarty")
 - What makes it different (real-time sync, latency compensation, DRM support)
 - Team section (optional — can be generic or named)
 - Link to FAQ and Contact
@@ -182,7 +182,7 @@ Must cover:
 - Description of service (beta software, video watch-party synchronization)
 - User accounts and responsibilities
 - Acceptable use policy (no piracy, no harassment, no illegal content sharing)
-- Intellectual property (YallaSawa does not host or distribute video content)
+- Intellectual property (theBarty does not host or distribute video content)
 - Disclaimer of warranties (beta software, provided "as is")
 - Limitation of liability
 - Termination rights
@@ -197,8 +197,8 @@ Must cover:
 - Beta software status and expectations
 - No warranties (express or implied)
 - Limitation of liability (damages cap)
-- Third-party content (videos watched are from external platforms, not YallaSawa)
-- DRM and content licensing (YallaSawa does not circumvent DRM)
+- Third-party content (videos watched are from external platforms, not theBarty)
+- DRM and content licensing (theBarty does not circumvent DRM)
 - Network and connectivity (no guarantee of uptime)
 - Use at your own risk
 
@@ -207,7 +207,7 @@ Must cover:
 Organized by category:
 
 **Getting Started:**
-- What is YallaSawa?
+- What is theBarty?
 - How do I install it?
 - What platforms are supported?
 - Is it free?
@@ -227,7 +227,7 @@ Organized by category:
 
 **Legal:**
 - Is this legal?
-- Does YallaSawa host video content?
+- Does theBarty host video content?
 - What data do you collect?
 
 ### 5.7 Contact Page (`/contact`)
@@ -243,7 +243,7 @@ Organized by category:
 ## 6. Project Structure
 
 ```
-yallasawa-web/                      # Standalone repository
+thebarty-web/                      # Standalone repository
 ├── public/
 │   ├── fonts/                      # Self-hosted font files
 │   │   ├── PlusJakartaSans/
@@ -364,7 +364,7 @@ Tailwind CSS 4 uses CSS-first configuration via `@theme` in `globals.css`. No `t
 Railway auto-detects Next.js. No Dockerfile needed for a standalone repo.
 
 ```
-Repository:        github.com/youruser/yallasawa-web
+Repository:        github.com/youruser/thebarty-web
 Branch:            main
 Build Command:     (auto-detected) npm run build
 Start Command:     (auto-detected) npm start
@@ -398,7 +398,7 @@ export default config
    - Add CNAME or ALIAS record: `@` (root) → Railway CNAME target
    - Railway handles SSL/TLS automatically (Let's Encrypt)
 
-3. **Domain:** `yalla-sawa.com`
+3. **Domain:** `thebarty.com`
 
 ---
 
@@ -409,10 +409,10 @@ Every page gets proper metadata via the Next.js Metadata API:
 ```ts
 // Example for homepage
 export const metadata: Metadata = {
-  title: 'YallaSawa — Watch Together, No Matter Where',
+  title: 'theBarty — Watch Together, No Matter Where',
   description: 'Synchronized video watch parties with real-time chat. Download for Windows.',
   openGraph: {
-    title: 'YallaSawa',
+    title: 'theBarty',
     description: 'Watch videos together in perfect sync.',
     images: ['/images/og-image.png'],
     type: 'website',
@@ -433,12 +433,12 @@ All tasks are assigned to **Claude Code** for implementation. Tasks are ordered 
 
 | # | Task | Priority |
 |---|------|----------|
-| 1.1 | Create new repo `yallasawa-web`, scaffold with `npx create-next-app@latest` (TypeScript, Tailwind CSS 4, App Router, Turbopack) | Critical |
+| 1.1 | Create new repo `thebarty-web`, scaffold with `npx create-next-app@latest` (TypeScript, Tailwind CSS 4, App Router, Turbopack) | Critical |
 | 1.2 | Install dependencies: `framer-motion`, `lucide-react` | Critical |
 | 1.3 | Copy font files from YallaForga `packages/client/src/renderer/assets/fonts/` to `public/fonts/` | High |
 | 1.4 | Copy logo/brand assets from YallaForga `/logo/` to `public/images/` | High |
 | 1.5 | Configure `next/font/local` with Plus Jakarta Sans, Be Vietnam Pro, and Cairo in `src/fonts.ts` | High |
-| 1.6 | Set up Tailwind CSS 4 `@theme` in `globals.css` with YallaSawa design tokens (colors, fonts, radii) | Critical |
+| 1.6 | Set up Tailwind CSS 4 `@theme` in `globals.css` with theBarty design tokens (colors, fonts, radii) | Critical |
 | 1.7 | Configure `next.config.ts` with `output: 'standalone'` | High |
 | 1.8 | Verify local dev server runs with `npm run dev` | Critical |
 
@@ -470,7 +470,7 @@ All tasks are assigned to **Claude Code** for implementation. Tasks are ordered 
 
 | # | Task | Priority |
 |---|------|----------|
-| 4.1 | Research and draft **Privacy Policy** tailored to YallaSawa (Socket.IO, Firebase, chat data, DRM) | Critical |
+| 4.1 | Research and draft **Privacy Policy** tailored to theBarty (Socket.IO, Firebase, chat data, DRM) | Critical |
 | 4.2 | Research and draft **Terms of Service** (beta software, acceptable use, IP, liability) | Critical |
 | 4.3 | Research and draft **Disclaimer** (beta status, no warranties, third-party content) | Critical |
 | 4.4 | Build shared legal page layout component (consistent formatting, last-updated date, TOC) | High |
@@ -525,11 +525,11 @@ Phases 1→2→3 are sequential (each depends on the previous). Phases 4 and 5 c
 
 Before starting implementation:
 
-- [x] Domain: `yalla-sawa.com`
+- [x] Domain: `thebarty.com`
 - [ ] Decide on contact email address for legal/support pages
 - [ ] Confirm team/founder info for the About page (or keep it generic)
 - [ ] Provide or approve an app screenshot for the hero section
-- [ ] Create GitHub repo (`yallasawa-web`)
+- [ ] Create GitHub repo (`thebarty-web`)
 - [ ] Railway account access for creating the new web service
 
 ---
@@ -552,6 +552,6 @@ These are out of scope for v1 but worth planning for:
 - The site is dark mode only for v1 (matching the desktop app's primary theme)
 - All legal content should be reviewed by a qualified attorney before going fully live — the AI-drafted versions serve as a strong starting foundation
 - Font files are copied from the client repo — no cross-repo dependency
-- The landing page has zero dependency on `@yallasawa/shared` — it's fully standalone
+- The landing page has zero dependency on `@thebarty/shared` — it's fully standalone
 - Tailwind CSS 4 uses CSS-first config (`@theme` in `globals.css`) — no `tailwind.config.ts` needed
 - Railway auto-detects Next.js — no Dockerfile required for the standalone repo

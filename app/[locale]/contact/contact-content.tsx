@@ -42,7 +42,7 @@ export default function ContactContent() {
       <div className="mx-auto max-w-5xl">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <span className="inline-block rounded-full bg-cyan/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-cyan">
+            <span className="inline-block rounded-full bg-cyan/10 px-4 py-1.5 text-xs font-semibold uppercase text-cyan">
               {t("badge")}
             </span>
             <h1 className="mt-4 font-display text-4xl font-bold text-text-primary md:text-5xl">

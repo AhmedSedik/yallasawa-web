@@ -1,14 +1,16 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source ".";
+@source "../components";
 
 @theme {
-  /* Brand Accent (amber-gold — matches new icon) */
-  --color-cyan: #ffd68a;
-  --color-cyan-light: #ffe8b8;
-  --color-coral: #FF6B5A;
+  /* Brand Accent (hot pink — matches theBarty icon) */
+  --color-cyan: #ff2d55;
+  --color-cyan-light: #ff7a93;
+  --color-coral: #ffb347;
 
-  /* CTA Colors (amber — buttons only) */
-  --color-amber-light: #ffe2ab;
-  --color-amber-deep: #ffbf00;
+  /* CTA Colors */
+  --color-amber-light: #ff7a93;
+  --color-amber-deep: #ff2d55;
 
   /* Surfaces */
   --color-surface-base: #11131b;
@@ -20,13 +22,13 @@
 
   /* Text */
   --color-text-primary: #e1e2ed;
-  --color-text-warm: #d4c5ab;
-  --color-outline: #9c8f78;
+  --color-text-warm: #d8c7cd;
+  --color-outline: #a38d95;
 
-  /* Glass (amber-tinted) */
+  /* Glass (brand-tinted) */
   --color-glass: rgba(39, 42, 50, 0.5);
-  --color-glass-border: rgba(255, 214, 138, 0.12);
-  --color-glass-border-hover: rgba(255, 214, 138, 0.25);
+  --color-glass-border: rgba(255, 45, 85, 0.14);
+  --color-glass-border-hover: rgba(255, 45, 85, 0.3);
 
   /* Border Radius */
   --radius-sm: 10px;
@@ -35,6 +37,7 @@
   --radius-xl: 32px;
 
   /* Fonts (registered via next/font/local) */
+  --font-brand: var(--font-inter);
   --font-display: var(--font-jakarta);
   --font-body: var(--font-vietnam);
   --font-arabic: var(--font-cairo);
@@ -62,7 +65,7 @@ body {
   border-color: var(--color-glass-border-hover);
 }
 
-/* Amber Gradient — CTA buttons ONLY */
+/* Brand Gradient — CTA buttons ONLY */
 .amber-gradient {
   background: linear-gradient(135deg, var(--color-amber-deep), var(--color-amber-light));
 }
@@ -74,13 +77,13 @@ body {
   background-clip: text;
 }
 
-/* Amber Glow (brand accent) */
+/* Brand Glow */
 .cyan-glow {
-  box-shadow: 0 0 60px rgba(255, 214, 138, 0.15), 0 0 120px rgba(255, 214, 138, 0.08);
+  box-shadow: 0 0 60px rgba(255, 45, 85, 0.16), 0 0 120px rgba(255, 45, 85, 0.08);
 }
 
 .cyan-glow-sm {
-  box-shadow: 0 0 30px rgba(255, 214, 138, 0.1), 0 0 60px rgba(255, 214, 138, 0.05);
+  box-shadow: 0 0 30px rgba(255, 45, 85, 0.12), 0 0 60px rgba(255, 45, 85, 0.06);
 }
 
 /* Smooth scrolling */
@@ -90,7 +93,7 @@ html {
 
 /* Selection color */
 ::selection {
-  background-color: rgba(255, 214, 138, 0.3);
+  background-color: rgba(255, 45, 85, 0.3);
   color: var(--color-text-primary);
 }
 

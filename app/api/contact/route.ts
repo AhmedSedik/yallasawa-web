@@ -1,19 +1,22 @@
+import { BRAND } from "@/lib/brand";
+import { CONTACT_EMAIL, INFO_EMAIL, LEGAL_EMAIL } from "@/lib/constants";
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 // Route to the right inbox based on subject category
 function getRecipient(subject: string): string {
   const lower = subject.toLowerCase();
   if (lower.includes("legal") || lower.includes("privacy") || lower.includes("قانون")) {
-    return "legal@yalla-sawa.com";
+    return LEGAL_EMAIL;
   }
   if (lower.includes("bug") || lower.includes("خلل")) {
-    return "support@yalla-sawa.com";
+    return CONTACT_EMAIL;
   }
   if (lower.includes("feature") || lower.includes("ميزة")) {
-    return "info@yalla-sawa.com";
+    return INFO_EMAIL;
   }
   // General / default
-  return "info@yalla-sawa.com";
+  return INFO_EMAIL;
 }
 
 export async function POST(request: Request) {
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "YallaSawa Contact <info@yalla-sawa.com>",
+        from: `${BRAND.name} Contact <${INFO_EMAIL}>`,
         to: [recipient],
         reply_to: email,
         subject: `[Contact] ${subject} — ${name}`,

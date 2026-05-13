@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { BRAND } from "@/lib/brand";
 import { CONTACT_EMAIL } from "@/lib/constants";
 import { useRelease } from "@/lib/ReleaseContext";
+import { BrandLogo } from "./BrandLogo";
 
 export default function Footer() {
   const t = useTranslations("footer");
@@ -31,26 +32,20 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Col 1: Brand */}
           <div>
-            <div className="flex items-center gap-2">
-              <Image
-                src="/images/app-icon.png"
-                alt="YallaSawa"
-                width={32}
-                height={32}
-                className="h-8 w-8 rounded-lg"
-              />
-              <span className="font-display text-lg font-bold text-text-primary">
-                yalla<span className="text-cyan">sawa</span>
-              </span>
-            </div>
+            <BrandLogo
+              className="flex items-center gap-2"
+              iconClassName="h-8 w-8 rounded-lg"
+              size={32}
+              textClassName="font-brand text-lg font-bold text-white"
+            />
             <p className="text-text-warm text-sm mt-4">
-              {t("tagline")}
+              {t("tagline", { brand: BRAND.name })}
             </p>
           </div>
 
           {/* Col 2: Navigation */}
           <div>
-            <h3 className="text-text-primary font-display font-semibold text-sm uppercase tracking-wider mb-4">
+            <h3 className="text-text-primary font-display font-semibold text-sm uppercase mb-4">
               {t("product")}
             </h3>
             <ul className="space-y-3">
@@ -69,7 +64,7 @@ export default function Footer() {
 
           {/* Col 3: Legal */}
           <div>
-            <h3 className="text-text-primary font-display font-semibold text-sm uppercase tracking-wider mb-4">
+            <h3 className="text-text-primary font-display font-semibold text-sm uppercase mb-4">
               {t("legal")}
             </h3>
             <ul className="space-y-3">
@@ -88,7 +83,7 @@ export default function Footer() {
 
           {/* Col 4: Contact */}
           <div>
-            <h3 className="text-text-primary font-display font-semibold text-sm uppercase tracking-wider mb-4">
+            <h3 className="text-text-primary font-display font-semibold text-sm uppercase mb-4">
               {t("get_in_touch")}
             </h3>
             <a

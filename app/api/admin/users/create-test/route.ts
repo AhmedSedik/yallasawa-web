@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/firebase-admin";
 import { validateAdminRequest, unauthorized } from "@/lib/admin-api";
+import { BRAND } from "@/lib/brand";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(request: Request) {
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Username already taken" }, { status: 409 });
   }
 
-  const testEmail = email || `${username.toLowerCase()}@test.yallasawa.local`;
+  const testEmail = email || `${username.toLowerCase()}@test.${BRAND.domain}.local`;
 
   const docRef = db.collection("users").doc();
   await docRef.set({

@@ -1,6 +1,6 @@
-# YallaSawa Web — Landing Page
+# theBarty Web — Landing Page
 
-Public-facing landing page for YallaSawa — the video watch-party desktop app.
+Public-facing landing page for theBarty — the video watch-party desktop app.
 
 ## Tech Stack
 
@@ -74,7 +74,7 @@ public/
 - **Library**: next-intl with `[locale]` route segment
 - **Locales**: English (`en`) default, Arabic (`ar`)
 - **RTL**: Arabic uses `dir="rtl"`, Cairo font, logical CSS properties
-- **Domain**: `yalla-sawa.com`
+- **Domain**: `thebarty.com`
 
 ## Essential Commands
 
@@ -89,7 +89,7 @@ npm run lint       # ESLint
 
 - **Platform**: Railway (separate service from Socket.IO server)
 - **Config**: `output: 'standalone'` in `next.config.ts`
-- **Domain**: `yalla-sawa.com` pointed to Railway (SSL automatic)
+- **Domain**: `thebarty.com` pointed to Railway (SSL automatic)
 - Railway auto-detects Next.js — no Dockerfile needed
 
 ## Rules

@@ -1,5 +1,7 @@
+import { BRAND } from "@/lib/brand";
+
 // Site URL
-export const SITE_URL = "https://www.yalla-sawa.com";
+export const SITE_URL = BRAND.siteUrl;
 
 // Navigation links
 export const NAV_LINKS = [
@@ -16,9 +18,9 @@ export const LEGAL_LINKS = [
 ] as const;
 
 // Contact
-export const CONTACT_EMAIL = "support@yalla-sawa.com";
-export const INFO_EMAIL = "info@yalla-sawa.com";
-export const LEGAL_EMAIL = "legal@yalla-sawa.com";
+export const CONTACT_EMAIL = BRAND.contactEmail;
+export const INFO_EMAIL = BRAND.infoEmail;
+export const LEGAL_EMAIL = BRAND.legalEmail;
 
 // Social links
 export const SOCIAL_LINKS = {

@@ -59,7 +59,7 @@ export default function ChangelogContent({ entries }: ChangelogContentProps) {
         {/* Header */}
         <ScrollReveal>
           <div className="text-center">
-            <span className="inline-block rounded-full bg-cyan/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-cyan">
+            <span className="inline-block rounded-full bg-cyan/10 px-4 py-1.5 text-xs font-semibold uppercase text-cyan">
               {t("badge")}
             </span>
             <h1 className="mt-4 font-display text-4xl font-bold text-text-primary md:text-5xl">

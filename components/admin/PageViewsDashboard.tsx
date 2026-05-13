@@ -19,6 +19,31 @@ const rangeLabels: Record<TimeRange, string> = {
 
 const PAGE_SIZE = 25;
 
+function SortHeader({
+  field,
+  label,
+  onSort,
+  sortKey,
+}: {
+  field: SortKey;
+  label: string;
+  onSort: (field: SortKey) => void;
+  sortKey: SortKey;
+}) {
+  return (
+    <button
+      onClick={() => onSort(field)}
+      className="flex items-center gap-1 text-xs font-display font-semibold text-outline hover:text-text-primary transition-colors"
+    >
+      {label}
+      <ArrowUpDown
+        size={12}
+        className={sortKey === field ? "text-cta-amber-light" : "opacity-40"}
+      />
+    </button>
+  );
+}
+
 export default function PageViewsDashboard() {
   const [range, setRange] = useState<TimeRange>("30d");
   const [data, setData] = useState<PageViewAggregation | null>(null);
@@ -30,26 +55,36 @@ export default function PageViewsDashboard() {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetch(`/api/admin/pageviews?range=${range}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed to load page views");
-        return r.json();
-      })
-      .then((d) => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+      setLoading(true);
+      setError(null);
+      fetch(`/api/admin/pageviews?range=${range}`, { signal: controller.signal })
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to load page views");
+          return r.json();
+        })
+        .then((d) => {
+          setData(d);
+          setLoading(false);
+        })
+        .catch((err) => {
+          if (err.name === "AbortError") return;
+          setError(err.message);
+          setLoading(false);
+        });
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [range]);
 
   // Reset page when search/range changes
   useEffect(() => {
-    setPage(1);
+    const timeoutId = window.setTimeout(() => setPage(1), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [search, range]);
 
   const filtered = useMemo(() => {
@@ -86,18 +121,6 @@ export default function PageViewsDashboard() {
       setSortKey(key);
       setSortDir("desc");
     }
-  }
-
-  function SortHeader({ label, field }: { label: string; field: SortKey }) {
-    return (
-      <button
-        onClick={() => toggleSort(field)}
-        className="flex items-center gap-1 text-xs font-display font-semibold text-outline hover:text-text-primary transition-colors"
-      >
-        {label}
-        <ArrowUpDown size={12} className={sortKey === field ? "text-cta-amber-light" : "opacity-40"} />
-      </button>
-    );
   }
 
   return (
@@ -242,22 +265,22 @@ export default function PageViewsDashboard() {
                 <thead>
                   <tr className="border-b border-white/5">
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="Timestamp" field="timestamp" />
+                      <SortHeader label="Timestamp" field="timestamp" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="Path" field="path" />
+                      <SortHeader label="Path" field="path" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="Referrer Domain" field="referrerDomain" />
+                      <SortHeader label="Referrer Domain" field="referrerDomain" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="Country" field="country" />
+                      <SortHeader label="Country" field="country" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="IP Address" field="ip" />
+                      <SortHeader label="IP Address" field="ip" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                     <th className="text-left py-2.5 px-3">
-                      <SortHeader label="Locale" field="locale" />
+                      <SortHeader label="Locale" field="locale" onSort={toggleSort} sortKey={sortKey} />
                     </th>
                   </tr>
                 </thead>

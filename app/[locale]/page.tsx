@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SITE_URL } from "@/lib/constants";
+import { BRAND } from "@/lib/brand";
 import { localizedAlternates, localizedOgUrl } from "@/lib/metadata";
 import type { Locale } from "@/i18n/routing";
 import Hero from "@/components/Hero";
@@ -38,7 +39,7 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "YallaSawa",
+            name: BRAND.name,
             operatingSystem: "Windows",
             applicationCategory: "EntertainmentApplication",
             offers: {
@@ -49,7 +50,7 @@ export default function Home() {
             description:
               "Synchronized video watch parties for Arabic streaming platforms like Shahid and Watch iT. Free Windows desktop app.",
             url: SITE_URL,
-            image: `${SITE_URL}/images/app-icon.png`,
+            image: `${SITE_URL}${BRAND.assets.icon}`,
           }),
         }}
       />

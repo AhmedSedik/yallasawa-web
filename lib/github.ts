@@ -1,6 +1,8 @@
+import { BRAND } from "@/lib/brand";
+
 const REPO = "AhmedSedik/yalla_forga";
 const FALLBACK_VERSION = "0.8.1-beta";
-const FALLBACK_URL = `https://github.com/${REPO}/releases/download/v${FALLBACK_VERSION}/YallaSawa.Setup.${FALLBACK_VERSION}.exe`;
+const FALLBACK_URL = `https://github.com/${REPO}/releases/download/v${FALLBACK_VERSION}/${BRAND.name}.Setup.${FALLBACK_VERSION}.exe`;
 
 export interface ReleaseInfo {
   version: string;
@@ -21,8 +23,8 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
     });
 
     if (!res.ok) {
-      console.error(`[GitHub Release] API error: ${res.status} ${res.statusText}`);
-      throw new Error(`GitHub API ${res.status}`);
+      console.warn(`[GitHub Release] Falling back after ${res.status} ${res.statusText}`);
+      return { version: FALLBACK_VERSION, downloadUrl: FALLBACK_URL };
     }
 
     const releases: Array<{
@@ -39,8 +41,8 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
 
     const data = published[0];
     if (!data) {
-      console.error("[GitHub Release] No published releases found");
-      throw new Error("No releases found");
+      console.warn("[GitHub Release] No published releases found, using fallback");
+      return { version: FALLBACK_VERSION, downloadUrl: FALLBACK_URL };
     }
 
     const tag: string = data.tag_name?.replace(/^v/, "") ?? FALLBACK_VERSION;
@@ -56,7 +58,7 @@ export async function getLatestRelease(): Promise<ReleaseInfo> {
       downloadUrl: exeAsset?.browser_download_url ?? FALLBACK_URL,
     };
   } catch (err) {
-    console.error("[GitHub Release] Fallback used:", err);
+    console.warn("[GitHub Release] Fallback used:", err);
     return { version: FALLBACK_VERSION, downloadUrl: FALLBACK_URL };
   }
 }

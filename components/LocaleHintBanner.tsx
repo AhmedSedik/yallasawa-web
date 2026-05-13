@@ -39,7 +39,9 @@ export default function LocaleHintBanner({ currentLocale }: { currentLocale: Loc
   useEffect(() => {
     if (hasHintCookie()) return;
     const next = detectPreferredLocale(currentLocale);
-    if (next) setSuggested(next);
+    if (!next) return;
+    const timeoutId = window.setTimeout(() => setSuggested(next), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [currentLocale]);
 
   if (!suggested) return null;

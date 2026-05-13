@@ -24,21 +24,30 @@ export default function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetch(`/api/admin/analytics?range=${range}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed to load analytics");
-        return r.json();
-      })
-      .then((d) => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+      setLoading(true);
+      setError(null);
+      fetch(`/api/admin/analytics?range=${range}`, { signal: controller.signal })
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to load analytics");
+          return r.json();
+        })
+        .then((d) => {
+          setData(d);
+          setLoading(false);
+        })
+        .catch((err) => {
+          if (err.name === "AbortError") return;
+          setError(err.message);
+          setLoading(false);
+        });
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [range]);
 
   return (

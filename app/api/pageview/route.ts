@@ -1,3 +1,4 @@
+import { BRAND } from "@/lib/brand";
 import { getDb } from "@/lib/firebase-admin";
 import { headers } from "next/headers";
 
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
         const url = new URL(referrer);
         // Don't log self-referrals
         if (
-          !url.hostname.includes("yalla-sawa.com") &&
+          !url.hostname.includes(BRAND.domain) &&
           !url.hostname.includes("localhost")
         ) {
           referrerDomain = url.hostname;
@@ -46,6 +47,10 @@ export async function POST(request: Request) {
       } catch {
         // Invalid URL, keep as "direct"
       }
+    }
+
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+      return new Response(null, { status: 204 });
     }
 
     const db = getDb();

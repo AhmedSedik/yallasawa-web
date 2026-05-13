@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { jakartaSans, vietnamPro, cairo } from "../fonts";
+import Script from "next/script";
+import { inter, jakartaSans, vietnamPro, cairo } from "../fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LocaleHintBanner from "@/components/LocaleHintBanner";
@@ -12,6 +13,7 @@ import { ReleaseProvider } from "@/lib/ReleaseContext";
 import PageViewTracker from "@/components/PageViewTracker";
 import { SITE_URL } from "@/lib/constants";
 import { localizedAlternates } from "@/lib/metadata";
+import { BRAND } from "@/lib/brand";
 import "../globals.css";
 
 export const viewport: Viewport = {
@@ -49,7 +51,7 @@ export async function generateMetadata({
       alternateLocale: alternateOgLocales,
       images: [
         {
-          url: "/images/yallasawa-brand-card.png",
+          url: BRAND.assets.ogImage,
           width: 1200,
           height: 630,
           alt: t("home_title"),
@@ -62,15 +64,12 @@ export async function generateMetadata({
       description: t("home_description"),
       images: [
         {
-          url: "/images/yallasawa-brand-card.png",
+          url: BRAND.assets.ogImage,
           width: 1200,
           height: 630,
           alt: t("home_title"),
         },
       ],
-    },
-    icons: {
-      icon: "/images/yallasawa-icon-transparent.png",
     },
     alternates: localizedAlternates(locale, ""),
   };
@@ -97,28 +96,31 @@ export default async function LocaleLayout({
     <html
       lang={meta.htmlLang}
       dir={meta.dir}
-      className={`${jakartaSans.variable} ${vietnamPro.variable} ${cairo.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${inter.variable} ${jakartaSans.variable} ${vietnamPro.variable} ${cairo.variable} h-full antialiased`}
     >
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783833750870363"
-          crossOrigin="anonymous"
-        />
+      <body className={`min-h-full flex flex-col ${meta.fontClass ?? ""}`}>
+        {process.env.NODE_ENV === "production" && (
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783833750870363"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
         <script
           type="application/ld+json"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "YallaSawa",
+              name: BRAND.name,
               url: SITE_URL,
               inLanguage: locales.map((l) => localeConfig[l].htmlLang),
             }),
           }}
         />
-      </head>
-      <body className={`min-h-full flex flex-col ${meta.fontClass ?? ""}`}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ReleaseProvider release={release}>
             <PageViewTracker locale={locale} />
